@@ -4,13 +4,13 @@ library(shiny)
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("Oncology Data Submission"),
+  titlePanel("Oncology Mapping Data Submission"),
   
   # Sidebar layout with input and output definitions ----
-  sidebarLayout(
+  #sidebarLayout(
     
     # Sidebar panel for inputs ----
-    sidebarPanel(
+    #sidebarPanel(
 
       # # Input: Slider for the number of bins ----
       # sliderInput(inputId = "bins",
@@ -19,7 +19,7 @@ ui <- fluidPage(
       #             max = 50,
       #             value = 30)
 
-    ),
+    #),
 
     #Main panel for displaying outputs ----
     mainPanel(
@@ -27,6 +27,12 @@ ui <- fluidPage(
       fileInput("oncology_mapping", label = "Please upload Oncology mapping file"),
       actionButton("submit_oncology", label = "Submit")
       
-    )
-  )
+    ),
+  tags$style(HTML("
+        #submit_oncology {
+          background-color: #d80b8c;
+          color: #FFFFFF;
+          border-color: #d80b8c;
+        }"))
+  #)
 )

@@ -13,11 +13,11 @@ server <- function(input, output, session) {
       los_mapping <- los_grouping_process(oncology_filepath)
       dx_mapping <- dx_grouping_process(oncology_filepath)
       
-      append_sql(disease_mapping, "ONCOLOGY_DISEASE_GROUPINGS_TEST")
-      append_sql(department_mapping, "ONCOLOGY_DEPARTMENT_GROUPINGS_TEST")
-      append_sql(prc_mapping, "ONCOLOGY_PRC_GROUPINGS_TEST")
-      append_sql(los_mapping, "ONCOLOGY_LOS_EXCLUSIONS_TEST")
-      append_sql(dx_mapping, "ONCOLOGY_DX_CODES_TEST")
+      append_sql(disease_mapping, "ONCOLOGY_DISEASE_GROUPINGS")
+      append_sql(department_mapping, "ONCOLOGY_DEPARTMENT_GROUPINGS")
+      append_sql(prc_mapping, "ONCOLOGY_PRC_GROUPINGS")
+      append_sql(los_mapping, "ONCOLOGY_LOS_EXCLUSIONS")
+      append_sql(dx_mapping, "ONCOLOGY_DX_CODES")
       
       showModal(modalDialog(
         title = "Success",
@@ -25,8 +25,17 @@ server <- function(input, output, session) {
         easyClose = TRUE,
         footer = NULL
       ))
+      flag <- 1
       
-      source("oncology_pull.R")
+      if(flag == 1) {
+        source("oncology_pull.R")
+        showModal(modalDialog(
+          title = "Success",
+          paste0("The Oncology Analytics Tool has been updated"),
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
     }
   
     }
