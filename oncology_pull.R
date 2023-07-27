@@ -8,7 +8,7 @@ drop_query <- glue("DROP TABLE ONCOLOGY_ACCESS")
 date_1 <- "2021-01-01"
 date_2 <- Sys.Date() - 1
 reg_exp <- "\\[(.*?)\\]"
-update_query <- glue("CREATE TABLE ONCOLOGY_ACCESS AS \\
+update_query <- glue("CREATE TABLE ONCOLOGY_ACCESS_NEW AS \\
 SELECT h.*, count(*) over () totalRows \\
 FROM( \\
 SELECT g.*, 
@@ -41,11 +41,11 @@ FROM( \\
         ) g 
     ) h 
 WHERE h.Counts = 1")
-oncology_index <- glue("CREATE index oncology_filter_index on ONCOLOGY_ACCESS (SITE, DEPARTMENT_NAME, DX_GROUPER, APPT_DTTM, APPT_DAY)")
+oncology_index <- glue("CREATE index oncology_filter_index on ONCOLOGY_ACCESS_NEW (SITE, DEPARTMENT_NAME, DX_GROUPER, APPT_DTTM, APPT_DAY)")
 poolWithTransaction(con, function(conn) {
-  if(dbExistsTable(conn, "ONCOLOGY_ACCESS")) {
-    dbExecute(conn,drop_query)
-  }
+  # if(dbExistsTable(conn, "ONCOLOGY_ACCESS")) {
+  #   dbExecute(conn,drop_query)
+  # }
   dbExecute(conn,update_query)
   dbExecute(conn,oncology_index)
   
