@@ -4,7 +4,7 @@ library(tidyverse)
 library(DBI)
 library(pool)
 con <- dbPool(drv = odbc::odbc(), dsn = "OAO Cloud DB", timeout = 30)
-drop_query <- glue("DROP TABLE ONCOLOGY_ACCESS")
+drop_query <- glue("DROP TABLE ONCOLOGY_ACCESS_NEW")
 date_1 <- "2021-01-01"
 date_2 <- Sys.Date() - 1
 reg_exp <- "\\[(.*?)\\]"
@@ -26,7 +26,7 @@ FROM( \\
         TO_CHAR(a.APPT_DTTM, 'yyyy-mm') AS Appt_Month_Year, \\
         trunc(a.APPT_DTTM) AS Appt_Date_Year, \\
         a.LOS_CODE, b.*, c.ASSOCIATIONLISTA, c.ASSOCIATIONLISTB, c.ASSOCIATIONLISTT, \\
-        c.INPERSONVSTELE, d.DISEASE_GROUP, e.*, \\
+        c.INPERSONVSTELE, d.DISEASE_GROUP, d.DISEASE_GROUP_B AS DISEASE_GROUP_DETAIL, e.*, \\
         TRIM(TRAILING FROM REGEXP_REPLACE(a.PROV_NAME_WID, '{reg_exp}', '')) AS Provider \\
         FROM MV_DM_PATIENT_ACCESS a \\
                             INNER JOIN ONCOLOGY_DEPARTMENT_GROUPINGS b on a.DEPARTMENT_ID = b.DEPARTMENT_ID and \\
@@ -41,11 +41,11 @@ FROM( \\
         ) g 
     ) h 
 WHERE h.Counts = 1")
-oncology_index <- glue("CREATE index oncology_filter_index on ONCOLOGY_ACCESS_NEW (SITE, DEPARTMENT_NAME, DX_GROUPER, APPT_DTTM, APPT_DAY)")
+oncology_index <- glue("CREATE index oncology_filter_index_new on ONCOLOGY_ACCESS_NEW (SITE, DEPARTMENT_NAME, DX_GROUPER, APPT_DTTM, APPT_DAY)")
 poolWithTransaction(con, function(conn) {
-  # if(dbExistsTable(conn, "ONCOLOGY_ACCESS")) {
-  #   dbExecute(conn,drop_query)
-  # }
+  if(dbExistsTable(conn, "ONCOLOGY_ACCESS_NEW")) {
+    dbExecute(conn,drop_query)
+  }
   dbExecute(conn,update_query)
   dbExecute(conn,oncology_index)
   
